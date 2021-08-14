@@ -1,0 +1,19 @@
+{
+    "name": "password_security_performance_test_code",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@kihyeon-hong/password_security_server": "^1.1.8",
+        "@kihyeon-hong/password_security_client": "^1.1.8",
+        "body-parser": "^1.19.0",
+        "express": "^4.17.1",
+        "request": "^2.88.2",
+        "http": "0.0.1-security"
+    }
+}
