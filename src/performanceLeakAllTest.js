@@ -38,6 +38,8 @@ async function performanceTest() {
         console.log(`=== 테스트 데이터: ${testPassword}, 실제 유출 여부: ${testLeakCount == 0 ? true : false} ===`);
 
         await passwordClient.passwordValidation(testPassword).then(function (result) {
+            console.log(result);
+
             fs.appendFileSync(__dirname + '/../files/performanceLeakAllTestLog.log', `유출 여부 예측: ${result.predictPoint < 0.6 ? true : false}\n`, 'utf8');
             console.log(`유출 여부 예측: ${result.predictPoint < 0.6 ? true : false}`);
 

@@ -1,15 +1,16 @@
+/*
+ * 평가 항목: 키보안 레벨 정확도
+ * 시험 내용: 인공지능 출입키 암호검증 모듈은 비밀번호가 유추당할 확률을 측정하여 보안 수준을 측정한다.
+ * 이를 시험하기 위해 무작위로 수집한 비밀번호 목록에 대해 검증을 수행하도록 하고, 미리 정해 둔 각 비밀번호 보안 수준에 대해 올바른 판단을 내리는지 수행한다.
+ * 비밀번호 1개당 10회 검증을 수행하며, 모두 올바른 결과로 출력하는지 확인한다.
+ */
+
 const PasswordSecurityServer = require('@kihyeon-hong/password_security_server');
 const PasswordSecurityClient = require('@kihyeon-hong/password_security_client');
 const fs = require('fs');
 
 var passwordServer = new PasswordSecurityServer.PasswordSecurity.PasswordSecurity();
 var passwordClient = new PasswordSecurityClient.PasswordSecurity.PasswordSecurity();
-
-/*
-    키보안레벨정확도
-    정확도 80%, 1개당 10번 검증하고 총 100개 비밀번호(랜덤으로 추출)
-    
- */
 
 var oriDatas = fs.readFileSync(__dirname + '/../files/updateLeakPasswordFeatures.txt', 'utf8');
 oriDatas = oriDatas.split('\n');
@@ -66,6 +67,8 @@ async function performanceTest() {
 
         for (let j = 0; j < 10; j++) {
             await passwordClient.passwordValidation(testPassword).then(function (result) {
+                console.log(result);
+
                 fs.appendFileSync(__dirname + '/../files/performanceTestLog.log', `${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.6 ? true : false}\n`, 'utf8');
                 console.log(`${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.6 ? true : false}`);
 
