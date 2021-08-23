@@ -5,11 +5,9 @@
  * 비밀번호 1개당 10회 검증을 수행하며, 모두 올바른 결과로 출력하는지 확인한다.
  */
 
-const PasswordSecurityServer = require('@kihyeon-hong/password_security_server');
 const PasswordSecurityClient = require('@kihyeon-hong/password_security_client');
 const fs = require('fs');
 
-var passwordServer = new PasswordSecurityServer.PasswordSecurity.PasswordSecurity();
 var passwordClient = new PasswordSecurityClient.PasswordSecurity.PasswordSecurity();
 
 var oriDatas = fs.readFileSync(__dirname + '/../files/updateLeakPasswordFeatures.txt', 'utf8');
