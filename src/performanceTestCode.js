@@ -5,11 +5,13 @@
  * 비밀번호 1개당 10회 검증을 수행하며, 모두 올바른 결과로 출력하는지 확인한다.
  */
 
+// 사용 모듈 import
 const PasswordSecurityClient = require('@kihyeon-hong/password_security_client');
 const fs = require('fs');
 
 var passwordClient = new PasswordSecurityClient.PasswordSecurity.PasswordSecurity();
 
+// 기존에 유출된 비밀번호 전처리
 var oriDatas = fs.readFileSync(__dirname + '/../files/updateLeakPasswordFeatures.txt', 'utf8');
 oriDatas = oriDatas.split('\n');
 
@@ -26,6 +28,7 @@ for (let i = 0; i < datas.length - 1; i++) {
     leakDataValue[i] = 0;
 }
 
+// 기존에 유출되지 않은 비밀번호 전처리
 oriDatas = fs.readFileSync(__dirname + '/../files/updateNotLeakPasswordFeatures.txt', 'utf8');
 oriDatas = oriDatas.split('\n');
 
@@ -42,16 +45,28 @@ for (let i = 0; i < datas.length - 1; i++) {
     notLeakDataValue[i] = 1;
 }
 
+// 시험 결과 로그 파일 초기화
 fs.writeFileSync(__dirname + '/../files/performanceTestLog.log', '', 'utf8');
 
+/*
+    키보안레벨 정확도 성능 평가 메소드
+*/
 async function performanceTest() {
+    // success: 예측 성공 횟수, fail: 예측 실패 횟수
     let success = 0;
     let fail = 0;
 
+    // 100개의 비밀번호에 대해 유출 여부 예측 수행
     for (let i = 0; i < 100; i++) {
         let testPassword = '';
         let testLeakCount = 0;
 
+        /*
+            유출된 비밀번호 1회, 유출되지 않은 비밀번호 1회 수행
+            100개의 비밀번호 중 50개는 유출된 비밀번호에 대한 예측, 50개는 유출되지 않은 비밀번호에 대해 예측 수행
+            유출된 비밀번호는 0으로 라벨링하며, 유출되지 않은 비밀번호는 1로 라벨링
+            예측 결과가 0.5보다 작을 경우 유출된 비밀번호로 예측한 것이며, 0.5 이상인 경우는 유출되지 않은 비밀번호로 예측한 결과
+        */
         if (i % 2 == 0) {
             testPassword = leakString[Math.floor(Math.random() * leakString.length)];
             testLeakCount = 0;
@@ -67,19 +82,22 @@ async function performanceTest() {
         );
         console.log(`=== 테스트 데이터: ${testPassword}, 실제 유출 여부: ${testLeakCount == 0 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'} ===`);
 
+        /*
+            1개의 비밀번호에 대해 10회의 예측 수행
+        */
         for (let j = 0; j < 10; j++) {
             await passwordClient.passwordValidation(testPassword).then(function (result) {
                 console.log(result);
 
                 fs.appendFileSync(
                     __dirname + '/../files/performanceTestLog.log',
-                    `${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.6 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'}\n`,
+                    `${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.5 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'}\n`,
                     'utf8'
                 );
-                console.log(`${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.6 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'}`);
+                console.log(`${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.5 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'}`);
 
                 if (j == 9) {
-                    if ((testLeakCount == 0 ? true : false) == (result.predictPoint < 0.6 ? true : false)) {
+                    if ((testLeakCount == 0 ? true : false) == (result.predictPoint < 0.5 ? true : false)) {
                         fs.appendFileSync(__dirname + '/../files/performanceTestLog.log', `=== 예측 성공 여부: ${'예측 성공'} ===\n\n`, 'utf8');
                         console.log(`=== 예측 성공 여부: ${'예측 성공'} ===\n\n`);
 
@@ -95,8 +113,12 @@ async function performanceTest() {
         }
     }
 
+    /*
+        키보안레벨 정확도 성능 평가 후 결과 로그 기록
+    */
     fs.appendFileSync(__dirname + '/../files/performanceTestLog.log', `예측 성공: ${success}회, 예측 실패: ${fail}회, 예측 정확도 ${(success / (success + fail)) * 100}%`, 'utf8');
     console.log(`예측 성공: ${success}회, 예측 실패: ${fail}회, 예측 정확도 ${(success / (success + fail)) * 100}%`);
 }
 
+// 키보안레벨 정확도 성능 평가 실행
 performanceTest();
