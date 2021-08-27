@@ -9,8 +9,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@kihyeon-hong/password_security_client": "^1.1.9",
-        "@kihyeon-hong/password_security_server": "^1.1.8",
+        "@kihyeon-hong/password_security_client": "^1.2.0",
+        "@kihyeon-hong/password_security_server": "^1.1.9",
         "body-parser": "^1.19.0",
         "express": "^4.17.1",
         "http": "0.0.1-security",
