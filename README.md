@@ -24,7 +24,7 @@ npm install
 -   학습된 모델의 가중치와 구조를 받아 올 서버 주소와 포트
 
 ```javascript
-pwd.serverAddressUpdate('100.25.199.10:65001');
+pwd.serverAddressUpdate('localhost:65001');
 ```
 
 #### ./passwordModelDist.js
