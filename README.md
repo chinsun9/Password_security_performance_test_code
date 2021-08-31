@@ -4,24 +4,26 @@
 
 ### install
 
-#### ./.npmrc
-
-```text
-//npm.pkg.github.com/:_authToken=발급받은 ReadOnly_key
-@kihyeon-hong:registry=https://npm.pkg.github.com/
-```
-
-#### npm install
+#### git clone
 
 ```bash
+git clone https://github.com/KiHyeon-Hong/Password_security_performance_test_code.git
+cd Password_security_performance_test_code
+git clone https://github.com/KiHyeon-Hong/Password_security_client.git PasswordSecurity
+cd PasswordSecurity
 npm install
+cd ..
 ```
 
 ### Usage
 
-#### src/performanceTestCode.js
+#### src/performanceTest.js
 
 -   유출된 비밀번호와 유출되지 않은 비밀번호를 랜덤으로 100개를 추출하여 10회씩 예측 수행
+
+```bash
+node performanceTest.js
+```
 
 ```text
 === 테스트 데이터: krek, 실제 유출 여부: 유출된 비밀번호 ===
@@ -55,38 +57,9 @@ npm install
 예측 성공: 94회, 예측 실패: 6회, 예측 정확도 94%
 ```
 
-#### src/testCode/performanceLeakAllTest.js
+### files
 
--   유출된 비밀번호에 대해 모든 예측 수행 (1회씩)
-
-```text
-=== 테스트 데이터: yandro, 실제 유출 여부: true ===
-유출 여부 예측: true
-=== 예측 성공 여부: true ===
-
-=== 테스트 데이터: 98085, 실제 유출 여부: true ===
-유출 여부 예측: true
-=== 예측 성공 여부: true ===
-
-=== 테스트 데이터: asd1, 실제 유출 여부: true ===
-유출 여부 예측: true
-=== 예측 성공 여부: true ===
-```
-
-#### src/testCode/performanceNotLeakAllTest.js
-
--   유출되지 않은 비밀번호에 대해 모든 예측 수행 (1회씩)
-
-```text
-=== 테스트 데이터: ccrjk11332, 실제 유출 여부: false ===
-유출 여부 예측: false
-=== 예측 성공 여부: true ===
-
-=== 테스트 데이터: hq6JWSKIGANS%*, 실제 유출 여부: false ===
-유출 여부 예측: false
-=== 예측 성공 여부: true ===
-
-=== 테스트 데이터: FREMONTBOBBR12&#, 실제 유출 여부: false ===
-유출 여부 예측: false
-=== 예측 성공 여부: true ===
-```
+-   files/leakPasswords.txt: 무작위로 수집한 유출된 비밀번호 목록
+-   files/notLeakPasswords.txt: 무작위로 수집한 유출되지 않은 비밀번호 목록
+-   PasswordSecurity/: 출입키 암호검증 인공지능 모듈
+-   src/performanceTest.js: 키보안레벨 정확도 평가 소스 코드
