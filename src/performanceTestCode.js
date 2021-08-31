@@ -7,13 +7,13 @@
 
 // 사용 모듈 import
 // const PasswordSecurityClient = require('@kihyeon-hong/password_security_client');
-const PasswordSecurityClient = require(__dirname + '/../PasswordSecurityClient');
+const PasswordSecurityClient = require(__dirname + '/../PasswordSecurity');
 const fs = require('fs');
 
 var passwordClient = new PasswordSecurityClient.PasswordSecurity.PasswordSecurity();
 
 // 기존에 유출된 비밀번호 전처리
-var oriDatas = fs.readFileSync(__dirname + '/../files/updateLeakPasswordFeatures.txt', 'utf8');
+var oriDatas = fs.readFileSync(__dirname + '/../files/leakPasswords.txt', 'utf8');
 oriDatas = oriDatas.split('\n');
 
 var datas = [];
@@ -30,7 +30,7 @@ for (let i = 0; i < datas.length - 1; i++) {
 }
 
 // 기존에 유출되지 않은 비밀번호 전처리
-oriDatas = fs.readFileSync(__dirname + '/../files/updateNotLeakPasswordFeatures.txt', 'utf8');
+oriDatas = fs.readFileSync(__dirname + '/../files/notLeakPasswords.txt', 'utf8');
 oriDatas = oriDatas.split('\n');
 
 datas = [];
@@ -47,7 +47,7 @@ for (let i = 0; i < datas.length - 1; i++) {
 }
 
 // 시험 결과 로그 파일 초기화
-fs.writeFileSync(__dirname + '/../files/performanceTestLog.log', '', 'utf8');
+fs.writeFileSync(__dirname + '/../files/performance.log', '', 'utf8');
 
 /*
     키보안레벨 정확도 성능 평가 메소드
@@ -77,7 +77,7 @@ async function performanceTest() {
         }
 
         fs.appendFileSync(
-            __dirname + '/../files/performanceTestLog.log',
+            __dirname + '/../files/performance.log',
             `=== 테스트 데이터: ${testPassword}, 실제 유출 여부: ${testLeakCount == 0 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'} ===\n`,
             'utf8'
         );
@@ -90,21 +90,17 @@ async function performanceTest() {
             await passwordClient.passwordValidation(testPassword).then(function (result) {
                 console.log(result);
 
-                fs.appendFileSync(
-                    __dirname + '/../files/performanceTestLog.log',
-                    `${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.5 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'}\n`,
-                    'utf8'
-                );
+                fs.appendFileSync(__dirname + '/../files/performance.log', `${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.5 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'}\n`, 'utf8');
                 console.log(`${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.5 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'}`);
 
                 if (j == 9) {
                     if ((testLeakCount == 0 ? true : false) == (result.predictPoint < 0.5 ? true : false)) {
-                        fs.appendFileSync(__dirname + '/../files/performanceTestLog.log', `=== 예측 성공 여부: ${'예측 성공'} ===\n\n`, 'utf8');
+                        fs.appendFileSync(__dirname + '/../files/performance.log', `=== 예측 성공 여부: ${'예측 성공'} ===\n\n`, 'utf8');
                         console.log(`=== 예측 성공 여부: ${'예측 성공'} ===\n\n`);
 
                         success++;
                     } else {
-                        fs.appendFileSync(__dirname + '/../files/performanceTestLog.log', `=== 예측 성공 여부: ${'예측 실패'} ===\n\n`, 'utf8');
+                        fs.appendFileSync(__dirname + '/../files/performance.log', `=== 예측 성공 여부: ${'예측 실패'} ===\n\n`, 'utf8');
                         console.log(`=== 예측 성공 여부: ${'예측 실패'} ===\n\n`);
 
                         fail++;
@@ -117,7 +113,7 @@ async function performanceTest() {
     /*
         키보안레벨 정확도 성능 평가 후 결과 로그 기록
     */
-    fs.appendFileSync(__dirname + '/../files/performanceTestLog.log', `예측 성공: ${success}회, 예측 실패: ${fail}회, 예측 정확도 ${(success / (success + fail)) * 100}%`, 'utf8');
+    fs.appendFileSync(__dirname + '/../files/performance.log', `예측 성공: ${success}회, 예측 실패: ${fail}회, 예측 정확도 ${(success / (success + fail)) * 100}%`, 'utf8');
     console.log(`예측 성공: ${success}회, 예측 실패: ${fail}회, 예측 정확도 ${(success / (success + fail)) * 100}%`);
 }
 

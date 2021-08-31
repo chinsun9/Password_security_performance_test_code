@@ -1,6 +1,6 @@
 node_modules/
 .npmrc
-PasswordSecurityClient/
+PasswordSecurity/
 passwordModelDist.js
 passwordValidation.js
 serverAddressUpdate.js
