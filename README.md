@@ -19,36 +19,6 @@ npm install
 
 ### Usage
 
-#### ./serverAddressUpdate.js
-
--   학습된 모델의 가중치와 구조를 받아 올 서버 주소와 포트
-
-```javascript
-pwd.serverAddressUpdate('localhost:65001');
-```
-
-#### ./passwordModelDist.js
-
--   받아올 모델의 버전과 코멘트
-
-```javascript
-pwd.passwordModelDistribution('0.2', 'test comment');
-```
-
-#### ./passwordValidation.js
-
--   받아온 모델을 이용하여 비밀번호 유출 여부 예측
-
-```javascript
-pwd.passwordValidation('pds$66wo@d').then(function (result) {
-    console.log(result);
-
-    pwd.passwordValidation('q1w2e3r4').then(function (result) {
-        console.log(result);
-    });
-});
-```
-
 #### src/performanceTestCode.js
 
 -   유출된 비밀번호와 유출되지 않은 비밀번호를 랜덤으로 100개를 추출하여 10회씩 예측 수행
