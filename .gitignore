@@ -4,8 +4,8 @@ PasswordSecurityClient/
 passwordModelDist.js
 passwordValidation.js
 serverAddressUpdate.js
-files/LeakPasswordFeatures.txt
-files/notLeakPasswordFeatures.txt
-files/performanceLeakAllTestLog.log
-files/performanceNotLeakAllTestLog.log
-files/performanceTestLog.log
+files/LeakPasswordFeaturesTemp.txt
+files/notLeakPasswordFeaturesTemp.txt
+files/performanceLeakAllTestLogTemp.log
+files/performanceNotLeakAllTestLogTemp.log
+files/performanceTestLogTemp.log
