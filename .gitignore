@@ -10,3 +10,4 @@ files/performanceLeakAllTestLogTemp.log
 files/performanceNotLeakAllTestLogTemp.log
 files/performanceTestLogTemp.log
 files/performance.log
+src/testCode/
