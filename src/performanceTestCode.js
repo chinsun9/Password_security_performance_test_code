@@ -6,7 +6,8 @@
  */
 
 // 사용 모듈 import
-const PasswordSecurityClient = require('@kihyeon-hong/password_security_client');
+// const PasswordSecurityClient = require('@kihyeon-hong/password_security_client');
+const PasswordSecurityClient = require('../PasswordSecurityClient');
 const fs = require('fs');
 
 var passwordClient = new PasswordSecurityClient.PasswordSecurity.PasswordSecurity();
