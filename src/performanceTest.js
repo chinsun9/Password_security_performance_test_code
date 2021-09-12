@@ -10,7 +10,7 @@ const fs = require('fs');
 var passwordClient = new PasswordSecurityClient.PasswordSecurity.PasswordSecurity();
 
 /*
- *
+ * leakPasswords.txt 파일에서 미리 유출 여부를 라벨링 해놓은 비밀번호 데이터 68,582개를 전처리
  */
 var oriDatas = fs.readFileSync(__dirname + '/../files/leakPasswords.txt', 'utf8');
 oriDatas = oriDatas.split('\n');
@@ -29,7 +29,7 @@ for (let i = 0; i < datas.length - 1; i++) {
 }
 
 /*
- *
+ * notLeakPasswords.txt 파일에서 미리 유출 여부를 라벨링 해놓은 비밀번호 데이터 64,865개를 전처리
  */
 oriDatas = fs.readFileSync(__dirname + '/../files/notLeakPasswords.txt', 'utf8');
 oriDatas = oriDatas.split('\n');
@@ -48,35 +48,37 @@ for (let i = 0; i < datas.length - 1; i++) {
 }
 
 /*
- *
+ * 스마트 보안 게이트웨이의 인공지능 출입키 암호검증 모듈을 이용하여 평가한 비밀번호의 보안성을 기록
+ * 평가를 위해 로그 파일(performance.log) 생성 및 초기화
  */
 fs.writeFileSync(__dirname + '/../files/performance.log', '', 'utf8');
 
 /*
- *
+ * 키보안 레벨 정확도 평가 메소드
+ * 1개의 비밀번호는 총 10회씩 유출 여부 예측에 사용되며, 100개의 비밀번호에 대해 키보안 레벨 정확도 평가 수행
+ * 정확도 평가 결과는 로그 파일(performance.lg)에 저장하고 콘솔로 출력
  */
 async function performanceTest() {
     /*
-     *
+     * 키보안 레벨 정확도 평가를 위해 성공, 실패 기록
+     * success: 유출된 비밀번호를 유출된 비밀번호로 평가하였거나, 유출되지 않은 비밀번호를 유출되지 않은 비밀번호로 평가
+     * fail: 유출된 비밀번호를 유출되지 않은 비밀번호로 평가하였거나, 유출되지 않은 비밀번호를 유출된 비밀번호로 평가
      */
     let success = 0;
     let fail = 0;
 
     /*
-     *
+     * 총 100개의 비밀번호에 대해 키보안 레벨 정확도 평가
      */
     for (let i = 0; i < 100; i++) {
         let testPassword = '';
         let testLeakCount = 0;
 
         /*
-            유출된 비밀번호 1회, 유출되지 않은 비밀번호 1회 수행
-            100개의 비밀번호 중 50개는 유출된 비밀번호에 대한 예측, 50개는 유출되지 않은 비밀번호에 대해 예측 수행
-            유출된 비밀번호는 0으로 라벨링하며, 유출되지 않은 비밀번호는 1로 라벨링
-            예측 결과가 0.5보다 작을 경우 유출된 비밀번호로 예측한 것이며, 0.5 이상인 경우는 유출되지 않은 비밀번호로 예측한 결과
-        */
-        /*
-         *
+         * 100회의 키보안 레벨 정확도 평가 중 50회는 유출된 비밀번호, 50회는 유출되지 않은 비밀번호에 대해 보안성 평가를 수행
+         * 이를 위해, 각 시행횟수가 짝수일 때는 유출된 비밀번호에서 랜덤으로 비밀번호 데이터를 추출하며, 홀수일 경우에는 유출되지 않은 비밀번호에서 랜덤으로 비밀번호 데이터를 추출
+         * 유출된 비밀번호는 0으로 라벨링하며, 유출되지 않은 비밀번호는 1로 라벨링
+         * 예측 결과가 0 ~ 0.5면 유출된 비밀번호, 0.5 ~ 1이면 유출되지 않은 비밀번호로 예측한 것으로 한다.
          */
         if (i % 2 == 0) {
             testPassword = leakString[Math.floor(Math.random() * leakString.length)];
@@ -86,6 +88,9 @@ async function performanceTest() {
             testLeakCount = 1;
         }
 
+        /*
+         * 로그 파일(performance.log)에 비밀번호, 실제 유출 여부 기록
+         */
         fs.appendFileSync(
             __dirname + '/../files/performance.log',
             `=== 테스트 데이터: ${testPassword}, 실제 유출 여부: ${testLeakCount == 0 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'} ===\n`,
@@ -94,7 +99,8 @@ async function performanceTest() {
         console.log(`=== 테스트 데이터: ${testPassword}, 실제 유출 여부: ${testLeakCount == 0 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'} ===`);
 
         /*
-         *
+         * 랜덤으로 추출한 비밀번호에 대해 유출 여부 예측 수행
+         * 1개의 비밀번호는 10회씩 평가하며, 결과를 로그 파일(performance.log)에 기록하고, 콘솔로 출력
          */
         for (let j = 0; j < 10; j++) {
             await passwordClient.passwordValidation(testPassword).then(function (result) {
@@ -103,6 +109,10 @@ async function performanceTest() {
                 fs.appendFileSync(__dirname + '/../files/performance.log', `${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.5 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'}\n`, 'utf8');
                 console.log(`${j + 1} 번째 유출 여부 예측: ${result.predictPoint < 0.5 ? '유출된 비밀번호' : '유출되지 않은 비밀번호'}`);
 
+                /*
+                 * 유출된 비밀번호에 대해 유출되었다고 평가하거나, 유출되지 않은 비밀번호에 대해 유출되지 않았다고 평가할 경우 성공
+                 * 유출된 비밀번호에 대해 유출되지 않았다고 평가하거나, 유출되지 않은 비밀번호에 대해 유출되었다고 평가할 경우 실패
+                 */
                 if (j == 9) {
                     if ((testLeakCount == 0 ? true : false) == (result.predictPoint < 0.5 ? true : false)) {
                         fs.appendFileSync(__dirname + '/../files/performance.log', `=== 예측 성공 여부: ${'예측 성공'} ===\n\n`, 'utf8');
@@ -121,11 +131,13 @@ async function performanceTest() {
     }
 
     /*
-     *
+     * 100회의 키보안 레벨 정확도 평가 후 결과를 로그 파일(performance.log)에 기록하고 콘솔로 출력
      */
     fs.appendFileSync(__dirname + '/../files/performance.log', `예측 성공: ${success}회, 예측 실패: ${fail}회, 예측 정확도 ${(success / (success + fail)) * 100}%`, 'utf8');
     console.log(`예측 성공: ${success}회, 예측 실패: ${fail}회, 예측 정확도 ${(success / (success + fail)) * 100}%`);
 }
 
-// 키보안레벨 정확도 성능 평가 실행
+/*
+ * 키보안 레벨 정확도 평가 수행
+ */
 performanceTest();
