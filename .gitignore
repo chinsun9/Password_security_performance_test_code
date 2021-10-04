@@ -9,6 +9,5 @@ files/performanceTestLogTemp.log
 files/performance.log
 src/testCode/
 passwordModelDist.js
-passwordValidation.js
 serverAddressUpdate.js
 PasswordSecurityTemp/
