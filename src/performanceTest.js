@@ -91,8 +91,12 @@ async function performanceTest() {
         /*
          * 로그 파일(performance.log)에 비밀번호, 실제 키보안레벨을 기록
          */
-        fs.appendFileSync(__dirname + '/../files/performance.log', `=== 테스트 비밀번호: ${testPassword}, 실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'} ===\n`, 'utf8');
-        console.log(`=== 테스트 비밀번호: ${testPassword}, 실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'} ===`);
+        fs.appendFileSync(
+            __dirname + '/../files/performance.log',
+            `===  ${i + 1} 번째 테스트 비밀번호: ${testPassword},  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'}  ===\n`,
+            'utf8'
+        );
+        console.log(`===  ${i + 1} 번째 테스트 비밀번호: ${testPassword},  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'}  ===`);
 
         /*
          * 랜덤으로 추출한 비밀번호에 대해 키보안레벨 예측 수행
@@ -102,8 +106,31 @@ async function performanceTest() {
             await passwordClient.passwordValidation(testPassword).then(function (result) {
                 console.log(result);
 
-                fs.appendFileSync(__dirname + '/../files/performance.log', `${j + 1} 번째 키보안레벨 예측: ${result.predictPoint < 0.5 ? '미흡' : '우수'}\n`, 'utf8');
-                console.log(`${j + 1} 번째 키보안레벨 예측: ${result.predictPoint < 0.5 ? '미흡' : '우수'}`);
+                fs.appendFileSync(
+                    __dirname + '/../files/performance.log',
+                    `키보안레벨 테스트 비밀번호: "${testPassword}",  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'},  키보안레벨 예측: ${result.predictPoint < 0.5 ? '미흡' : '우수'}`,
+                    'utf8'
+                );
+
+                if ((testLeakCount == 0 ? true : false) == (result.predictPoint < 0.5 ? true : false)) {
+                    fs.appendFileSync(__dirname + '/../files/performance.log', `,  예측 성공 여부: ${'예측 성공'}\n`, 'utf8');
+                } else {
+                    fs.appendFileSync(__dirname + '/../files/performance.log', `,  예측 성공 여부: ${'예측 실패'}\n`, 'utf8');
+                }
+
+                if ((testLeakCount == 0 ? true : false) == (result.predictPoint < 0.5 ? true : false)) {
+                    console.log(
+                        `키보안레벨 테스트 비밀번호: "${testPassword}",  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'},  키보안레벨 예측: ${
+                            result.predictPoint < 0.5 ? '미흡' : '우수'
+                        },  예측 성공 여부: 예측 성공`
+                    );
+                } else {
+                    console.log(
+                        `키보안레벨 테스트 비밀번호: "${testPassword}",  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'},  키보안레벨 예측: ${
+                            result.predictPoint < 0.5 ? '미흡' : '우수'
+                        },  예측 성공 여부: 예측 실패`
+                    );
+                }
 
                 /*
                  * 보안성이 미흡한 비밀번호를 미흡한 비밀번호로 평가하였거나, 보안성이 우수한 비밀번호를 우수한 비밀번호로 평가할 경우 성공
@@ -111,13 +138,13 @@ async function performanceTest() {
                  */
                 if (j == 9) {
                     if ((testLeakCount == 0 ? true : false) == (result.predictPoint < 0.5 ? true : false)) {
-                        fs.appendFileSync(__dirname + '/../files/performance.log', `=== 예측 성공 여부: ${'예측 성공'} ===\n\n`, 'utf8');
-                        console.log(`=== 예측 성공 여부: ${'예측 성공'} ===\n\n`);
+                        fs.appendFileSync(__dirname + '/../files/performance.log', `===  예측 성공 여부: ${'예측 성공'}  ===\n\n`, 'utf8');
+                        console.log(`===  예측 성공 여부: ${'예측 성공'}  ===\n\n`);
 
                         success++;
                     } else {
-                        fs.appendFileSync(__dirname + '/../files/performance.log', `=== 예측 성공 여부: ${'예측 실패'} ===\n\n`, 'utf8');
-                        console.log(`=== 예측 성공 여부: ${'예측 실패'} ===\n\n`);
+                        fs.appendFileSync(__dirname + '/../files/performance.log', `===  예측 성공 여부: ${'예측 실패'}  ===\n\n`, 'utf8');
+                        console.log(`===  예측 성공 여부: ${'예측 실패'}  ===\n\n`);
 
                         fail++;
                     }
