@@ -7,6 +7,7 @@ files/performanceLeakAllTestLogTemp.log
 files/performanceNotLeakAllTestLogTemp.log
 files/performanceTestLogTemp.log
 files/performance.log
+files/performanceExample.log
 src/testCode/
 passwordModelDist.js
 serverAddressUpdate.js
