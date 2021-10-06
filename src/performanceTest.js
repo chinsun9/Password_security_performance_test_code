@@ -91,12 +91,8 @@ async function performanceTest() {
         /*
          * 로그 파일(performance.log)에 비밀번호, 실제 키보안레벨을 기록
          */
-        fs.appendFileSync(
-            __dirname + '/../files/performance.log',
-            `===  ${i + 1} 번째 테스트 비밀번호: ${testPassword},  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'}  ===\n`,
-            'utf8'
-        );
-        console.log(`===  ${i + 1} 번째 테스트 비밀번호: ${testPassword},  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'}  ===`);
+        fs.appendFileSync(__dirname + '/../files/performance.log', `===  ${i + 1} 번째 테스트 비밀번호: ${testPassword},  실제 키보안레벨: ${testLeakCount == 0 ? '미흡' : '우수'}  ===\n`, 'utf8');
+        console.log(`===  ${i + 1} 번째 테스트 비밀번호: ${testPassword},  실제 키보안레벨: ${testLeakCount == 0 ? '미흡' : '우수'}  ===`);
 
         /*
          * 랜덤으로 추출한 비밀번호에 대해 키보안레벨 예측 수행
@@ -108,7 +104,7 @@ async function performanceTest() {
 
                 fs.appendFileSync(
                     __dirname + '/../files/performance.log',
-                    `키보안레벨 테스트 비밀번호: "${testPassword}",  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'},  키보안레벨 예측: ${result.predictPoint < 0.5 ? '미흡' : '우수'}`,
+                    `키보안레벨 테스트 비밀번호: "${testPassword}",  실제 키보안레벨: ${testLeakCount == 0 ? '미흡' : '우수'},  예측 키보안레벨: ${result.predictPoint < 0.5 ? '미흡' : '우수'}`,
                     'utf8'
                 );
 
@@ -120,13 +116,13 @@ async function performanceTest() {
 
                 if ((testLeakCount == 0 ? true : false) == (result.predictPoint < 0.5 ? true : false)) {
                     console.log(
-                        `키보안레벨 테스트 비밀번호: "${testPassword}",  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'},  키보안레벨 예측: ${
+                        `키보안레벨 테스트 비밀번호: "${testPassword}",  실제 키보안레벨: ${testLeakCount == 0 ? '미흡' : '우수'},  예측 키보안레벨: ${
                             result.predictPoint < 0.5 ? '미흡' : '우수'
                         },  예측 성공 여부: 예측 성공`
                     );
                 } else {
                     console.log(
-                        `키보안레벨 테스트 비밀번호: "${testPassword}",  실제 키보안레벨 등급: ${testLeakCount == 0 ? '미흡' : '우수'},  키보안레벨 예측: ${
+                        `키보안레벨 테스트 비밀번호: "${testPassword}",  실제 키보안레벨: ${testLeakCount == 0 ? '미흡' : '우수'},  예측 키보안레벨: ${
                             result.predictPoint < 0.5 ? '미흡' : '우수'
                         },  예측 성공 여부: 예측 실패`
                     );
