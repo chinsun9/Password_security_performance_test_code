@@ -10,7 +10,7 @@ const fs = require('fs');
 var passwordClient = new PasswordSecurityClient.PasswordSecurity.PasswordSecurity();
 
 /*
- * leakPasswords.txt 파일에서 미리 키보안레벨 정확도를 라벨링 해놓은 비밀번호 데이터 68,582개를 전처리
+ * leakPasswords.txt 파일에서 미리 키보안레벨을 라벨링 해놓은 비밀번호 데이터 68,582개를 전처리
  */
 var oriDatas = fs.readFileSync(__dirname + '/../files/leakPasswords.txt', 'utf8');
 oriDatas = oriDatas.split('\n');
@@ -29,7 +29,7 @@ for (let i = 0; i < datas.length - 1; i++) {
 }
 
 /*
- * notLeakPasswords.txt 파일에서 미리 키보안레벨 정확도를 라벨링 해놓은 비밀번호 데이터 64,865개를 전처리
+ * notLeakPasswords.txt 파일에서 미리 키보안레벨을 라벨링 해놓은 비밀번호 데이터 64,865개를 전처리
  */
 oriDatas = fs.readFileSync(__dirname + '/../files/notLeakPasswords.txt', 'utf8');
 oriDatas = oriDatas.split('\n');
